@@ -1,0 +1,65 @@
+# GenoTrace configuration
+project:
+  name: "GenoTrace"
+  version: "0.1.0"
+  description: "End-to-End NGS Analysis and Genomic Variant Prioritization Platform"
+
+# Dataset configuration
+data:
+  # Use a public dataset; document accession in data_manifest.json
+  reference_fasta: "data/reference/reference.fasta"
+  reads_r1: "data/raw/sample_R1.fastq.gz"
+  reads_r2: "data/raw/sample_R2.fastq.gz"
+  example_fasta: "data/example/example.fasta"
+  manifest: "data/data_manifest.json"
+
+# Quality control
+qc:
+  fastqc_outdir: "results/qc/fastqc"
+  multiqc_outdir: "results/qc/multiqc"
+  min_read_length: 50
+  min_base_quality: 20
+
+# Alignment
+alignment:
+  aligner: "bwa-mem"
+  bwa_index_prefix: "data/reference/reference"
+  sam_out: "results/processed/aligned.sam"
+  bam_sorted: "results/processed/aligned.sorted.bam"
+  threads: 4
+
+# Variant calling
+variant_calling:
+  caller: "freebayes"
+  vcf_out: "results/variants/raw_variants.vcf"
+  min_qual: 20
+  min_depth: 10
+
+# Filtering & prioritization
+filtering:
+  min_qual: 30
+  min_dp: 10
+  min_ao: 3  # alternate allele observations
+  remove_low_complexity: true
+
+prioritization:
+  weights:
+    quality: 0.30
+    effect: 0.40
+    frequency: 0.20
+    biological: 0.10
+  # Evidence from annotation/pop freq - missing treated as unknown (not penalized)
+  missing_as_unknown: true
+  explainable: true
+
+# Reporting
+reporting:
+  outdir: "results/reports"
+  html_report: "results/reports/genotrace_report.html"
+  summary_csv: "results/reports/variant_candidates.csv"
+  top_n: 50
+
+# Logging
+logging:
+  level: "INFO"
+  log_file: "results/reports/genotrace.log"
